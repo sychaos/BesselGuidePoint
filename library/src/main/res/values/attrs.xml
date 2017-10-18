@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="GuidePoint">
+        <attr name="radius" format="integer" />
+        <attr name="circlecolor" format="color" />
+        <attr name="number" format="integer" />
+        <attr name="padding" format="integer" />
+        <attr name="strokeWidth" format="integer" />
+    </declare-styleable>
+</resources>
