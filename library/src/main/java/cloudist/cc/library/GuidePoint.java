@@ -125,7 +125,7 @@ public class GuidePoint extends View {
     }
 
     public void scrollOffset(float currentPositionOffset) {
-        startX = (mPadding + 2 * (mRadius + mStrokeWidth)) * mCurrentIndex + mRadius + mStrokeWidth + currentPositionOffset * mPadding;
+        startX = (mPadding + 2 * (mRadius + mStrokeWidth)) * mCurrentIndex + currentPositionOffset * mPadding;
         postInvalidate();
     }
 
