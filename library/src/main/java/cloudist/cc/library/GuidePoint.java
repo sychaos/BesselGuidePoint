@@ -16,9 +16,9 @@ import android.view.View;
 public class GuidePoint extends View implements ViewPager.OnPageChangeListener {
 
     //向右滑 向左滚动
-    public static int DIRECTION_LEFT = 1;
+    public static int DIRECTION_LEFT = -1;
     //向左滑 向右滚动
-    public static int DIRECTION_RIGHT = 2;
+    public static int DIRECTION_RIGHT = 1;
 
     private Paint mPaint;
 
@@ -132,7 +132,7 @@ public class GuidePoint extends View implements ViewPager.OnPageChangeListener {
     }
 
     private void scrollOffset(float currentPositionOffset) {
-        startX = (mPadding + 2 * (mRadius + mStrokeWidth)) * mCurrentIndex + mRadius + mStrokeWidth + currentPositionOffset * mPadding;
+        startX = (mPadding + 2 * (mRadius + mStrokeWidth)) * mCurrentIndex + mRadius + mStrokeWidth + mDrection * currentPositionOffset * mPadding;
         postInvalidate();
     }
 
@@ -176,7 +176,7 @@ public class GuidePoint extends View implements ViewPager.OnPageChangeListener {
             mDrection = DIRECTION_LEFT;
             //向右快速滑动
             if (mDrection == DIRECTION_LEFT && position + positionOffset < mCurrentIndex - 1) {
-                mCurrentIndex = position - 1;
+                mCurrentIndex = position;
             } else {
                 scrollOffset(1 - positionOffset);
             }
