@@ -168,7 +168,7 @@ public class GuidePoint extends View implements ViewPager.OnPageChangeListener {
             mDrection = DIRECTION_RIGHT;
             //向左快速滑动 偏移量不归0 但是position发生了改变 需要更新当前索引 向左快速滑动
             if (mDrection == DIRECTION_RIGHT && position + positionOffset > mCurrentIndex + 1) {
-                mCurrentIndex = position;
+                mCurrentIndex = position - 1;
             } else {
                 scrollOffset(positionOffset);
             }
