@@ -161,7 +161,7 @@ public class GuidePoint extends View implements ViewPager.OnPageChangeListener {
         if (positionOffset == 0) {
             mCurrentIndex = position;
             Log.d("tag", "到达");
-            scrollOffset(0);
+            scrollIndex(position);
         }
         //向左滑，指示器向右移动
         if (position + positionOffset - mCurrentIndex > 0) {
@@ -186,8 +186,6 @@ public class GuidePoint extends View implements ViewPager.OnPageChangeListener {
 
     @Override
     public void onPageSelected(int position) {
-        mCurrentIndex = position;
-        scrollIndex(position);
     }
 
     @Override
