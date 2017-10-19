@@ -4,14 +4,21 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 /**
  * Created by cloudist on 2017/10/18.
  */
 
-public class GuidePoint extends View {
+public class GuidePoint extends View implements ViewPager.OnPageChangeListener {
+
+    //向右滑 向左滚动
+    public static int DIRECTION_LEFT = 1;
+    //向左滑 向右滚动
+    public static int DIRECTION_RIGHT = 2;
 
     private Paint mPaint;
 
@@ -25,6 +32,7 @@ public class GuidePoint extends View {
 
     private int centerPositionY;
     private int mCurrentIndex;
+    private int mDrection;
 
     public GuidePoint(Context context) {
         this(context, null);
@@ -42,7 +50,6 @@ public class GuidePoint extends View {
 
         mRadius = mTypedArray.getInt(R.styleable.GuidePoint_radius, 20);
         mColor = mTypedArray.getColor(R.styleable.GuidePoint_circlecolor, 0xff00dddd);
-        mNumber = mTypedArray.getInt(R.styleable.GuidePoint_number, 3);
         mPadding = mTypedArray.getInt(R.styleable.GuidePoint_padding, 25);
         mStrokeWidth = mTypedArray.getInt(R.styleable.GuidePoint_strokeWidth, 5);
         startX = mRadius + mStrokeWidth;
@@ -124,9 +131,20 @@ public class GuidePoint extends View {
         postInvalidate();
     }
 
-    public void scrollOffset(float currentPositionOffset) {
-        startX = (mPadding + 2 * (mRadius + mStrokeWidth)) * mCurrentIndex + currentPositionOffset * mPadding;
+    private void scrollOffset(float currentPositionOffset) {
+        startX = (mPadding + 2 * (mRadius + mStrokeWidth)) * mCurrentIndex + mRadius + mStrokeWidth + currentPositionOffset * mPadding;
         postInvalidate();
+    }
+
+    /**
+     * 绑定viewpager TODO
+     */
+    public void attachToViewpager(ViewPager viewPager) {
+        viewPager.addOnPageChangeListener(this);
+        mNumber = viewPager.getAdapter().getCount();
+        startX = (mPadding + 2 * (mRadius + mStrokeWidth)) * mCurrentIndex + mRadius + mStrokeWidth;
+        mDrection = DIRECTION_RIGHT;
+        invalidate();
     }
 
     public int getCurrentIndex() {
@@ -135,5 +153,44 @@ public class GuidePoint extends View {
 
     public void setCurrentIndex(int mCurrentIndex) {
         this.mCurrentIndex = mCurrentIndex;
+    }
+
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+        //偏移量为0 说明运动停止
+        if (positionOffset == 0) {
+            mCurrentIndex = position;
+            Log.d("tag", "到达");
+            scrollOffset(0);
+        }
+        //向左滑，指示器向右移动
+        if (position + positionOffset - mCurrentIndex > 0) {
+            mDrection = DIRECTION_RIGHT;
+            //向左快速滑动 偏移量不归0 但是position发生了改变 需要更新当前索引 向左快速滑动
+            if (mDrection == DIRECTION_RIGHT && position + positionOffset > mCurrentIndex + 1) {
+                mCurrentIndex = position;
+            } else {
+                scrollOffset(positionOffset);
+            }
+        } else if (position + positionOffset - mCurrentIndex < 0) { //向右滑，指示器向左移动 向右快速滑动
+            mDrection = DIRECTION_LEFT;
+            //向右快速滑动
+            if (mDrection == DIRECTION_LEFT && position + positionOffset < mCurrentIndex - 1) {
+                mCurrentIndex = position;
+            } else {
+                scrollOffset(1 - positionOffset);
+            }
+        }
+
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
+
     }
 }
