@@ -186,7 +186,8 @@ public class GuidePoint extends View implements ViewPager.OnPageChangeListener {
 
     @Override
     public void onPageSelected(int position) {
-
+        mCurrentIndex = position;
+        scrollIndex(position);
     }
 
     @Override
