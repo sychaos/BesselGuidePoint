@@ -260,7 +260,7 @@ public class BezierBannerDot extends View implements ViewPager.OnPageChangeListe
         //Y轴距离圆心距离
         float mY = (float) (Math.cos(radian) * mChangeRadius);
 
-        //辅助圆
+        //辅助圆 是跟MOVE_STEP_ONE mProgress有关系
         mSupportCircleX = getValue(getCenterPointAt(mSelectedIndex) + mRadius, getCenterPointAt(mSelectedIndex + 1), MOVE_STEP_ONE);
         mSupportCircleY = mRadius;
         mSupportChangeRadius = getValue(0, mRadius, mRadiusProgress);
@@ -428,7 +428,7 @@ public class BezierBannerDot extends View implements ViewPager.OnPageChangeListe
 
 
     /**
-     * 获取当前值(适用分阶段变化的值)
+     * 获取当前值(适用分阶段变化的值) TODO MOVE_STEP_ONE是什么
      *
      * @param start 初始值
      * @param end   终值
@@ -494,9 +494,20 @@ public class BezierBannerDot extends View implements ViewPager.OnPageChangeListe
     }
 
     /**
-     * 绑定viewpager 起始点不为0时有bug TODO
+     * 绑定viewpager
      */
     public void attachToViewpager(ViewPager viewPager) {
+        count = viewPager.getAdapter().getCount();
+        mSelectedIndex = viewPager.getCurrentItem();
+        moveToNext();
+        mDrection = DIRECTION_RIGHT;
+        invalidate();
+    }
+
+    /**
+     * 绑定viewpager TODO
+     */
+    public void attachToNoListennerViewpager(ViewPager viewPager) {
         viewPager.addOnPageChangeListener(this);
         count = viewPager.getAdapter().getCount();
         mSelectedIndex = viewPager.getCurrentItem();
@@ -505,7 +516,6 @@ public class BezierBannerDot extends View implements ViewPager.OnPageChangeListe
         invalidate();
     }
 
-    // TODO
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
         //偏移量为0 说明运动停止
@@ -518,7 +528,7 @@ public class BezierBannerDot extends View implements ViewPager.OnPageChangeListe
         if (position + positionOffset - mSelectedIndex > 0) {
             mDrection = DIRECTION_RIGHT;
             //向左快速滑动 偏移量不归0 但是position发生了改变 需要更新当前索引
-            if (mDrection == DIRECTION_RIGHT && position + positionOffset > mSelectedIndex + 1) {
+            if (position + positionOffset > mSelectedIndex + 1) {
                 mSelectedIndex = position;
                 Log.d(TAG, "向左快速滑动");
             } else {
@@ -527,7 +537,7 @@ public class BezierBannerDot extends View implements ViewPager.OnPageChangeListe
         } else if (position + positionOffset - mSelectedIndex < 0) { //向右滑，指示器向左移动
             mDrection = DIRECTION_LEFT;
             //向右快速滑动
-            if (mDrection == DIRECTION_LEFT && position + positionOffset < mSelectedIndex - 1) {
+            if (position + positionOffset < mSelectedIndex - 1) {
                 mSelectedIndex = position;
                 Log.d(TAG, "向右快速滑动");
             } else {
