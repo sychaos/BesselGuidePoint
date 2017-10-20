@@ -175,22 +175,22 @@ public class BezierBannerDot extends View implements ViewPager.OnPageChangeListe
         canvas.translate(getPaddingLeft(), getPaddingTop());
 
         //画暂不活动的背景圆
-            for (int i = 0; i < count; i++) {
-                if (mDrection == DIRECTION_RIGHT) {
-                    if (i == mSelectedIndex || i == mSelectedIndex + 1) {
-                        //活动的就不用画了
-                    } else {
-                        canvas.drawCircle(getCenterPointAt(i), mRadius, mNomarlRadius, mCirclePaint2);
-                    }
+        for (int i = 0; i < count; i++) {
+            if (mDrection == DIRECTION_RIGHT) {
+                if (i == mSelectedIndex || i == mSelectedIndex + 1) {
+                    //活动的就不用画了
+                } else {
+                    canvas.drawCircle(getCenterPointAt(i), mRadius, mNomarlRadius, mCirclePaint2);
+                }
 
-                } else if (mDrection == DIRECTION_LEFT) {
-                    if (i == mSelectedIndex || i == mSelectedIndex - 1) {
-                        //活动的就不用画了
-                    } else {
-                        canvas.drawCircle(getCenterPointAt(i), mRadius, mNomarlRadius, mCirclePaint2);
-                    }
+            } else if (mDrection == DIRECTION_LEFT) {
+                if (i == mSelectedIndex || i == mSelectedIndex - 1) {
+                    //活动的就不用画了
+                } else {
+                    canvas.drawCircle(getCenterPointAt(i), mRadius, mNomarlRadius, mCirclePaint2);
                 }
             }
+        }
 
         //mPath2与mPath需要关注
         //画活动背景圆
@@ -494,11 +494,12 @@ public class BezierBannerDot extends View implements ViewPager.OnPageChangeListe
     }
 
     /**
-     * 绑定viewpager TODO
+     * 绑定viewpager 起始点不为0时有bug TODO
      */
     public void attachToViewpager(ViewPager viewPager) {
         viewPager.addOnPageChangeListener(this);
         count = viewPager.getAdapter().getCount();
+        mSelectedIndex = viewPager.getCurrentItem();
         moveToNext();
         mDrection = DIRECTION_RIGHT;
         invalidate();
