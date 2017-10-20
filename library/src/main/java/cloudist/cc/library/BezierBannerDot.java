@@ -174,23 +174,23 @@ public class BezierBannerDot extends View implements ViewPager.OnPageChangeListe
         canvas.save();
         canvas.translate(getPaddingLeft(), getPaddingTop());
 
-        //在attachToViewpager后count才不为0
         //画暂不活动的背景圆
-        for (int i = 0; i < count; i++) {
-            if (mDrection == DIRECTION_RIGHT) {
-                if (i == mSelectedIndex || i == mSelectedIndex + 1) {
-                    //活动的就不用画了
-                    return;
+            for (int i = 0; i < count; i++) {
+                if (mDrection == DIRECTION_RIGHT) {
+                    if (i == mSelectedIndex || i == mSelectedIndex + 1) {
+                        //活动的就不用画了
+                    } else {
+                        canvas.drawCircle(getCenterPointAt(i), mRadius, mNomarlRadius, mCirclePaint2);
+                    }
+
+                } else if (mDrection == DIRECTION_LEFT) {
+                    if (i == mSelectedIndex || i == mSelectedIndex - 1) {
+                        //活动的就不用画了
+                    } else {
+                        canvas.drawCircle(getCenterPointAt(i), mRadius, mNomarlRadius, mCirclePaint2);
+                    }
                 }
-                canvas.drawCircle(getCenterPointAt(i), mRadius, mNomarlRadius, mCirclePaint2);
-            } else if (mDrection == DIRECTION_LEFT) {
-                if (i == mSelectedIndex || i == mSelectedIndex - 1) {
-                    //活动的就不用画了
-                    return;
-                }
-                canvas.drawCircle(getCenterPointAt(i), mRadius, mNomarlRadius, mCirclePaint2);
             }
-        }
 
         //mPath2与mPath需要关注
         //画活动背景圆
