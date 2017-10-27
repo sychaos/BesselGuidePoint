@@ -90,6 +90,7 @@ public class BezierBannerDot extends View implements ViewPager.OnPageChangeListe
     public static int DIRECTION_RIGHT = 2;
     private static final String TAG = "tag";
 
+    //AccelerateDecelerateInterpolator 在动画开始与结束的地方速率改变比较慢，在中间的时候加速
     Interpolator accelerateinterpolator = new AccelerateDecelerateInterpolator();
 
 
@@ -103,7 +104,7 @@ public class BezierBannerDot extends View implements ViewPager.OnPageChangeListe
 
     public BezierBannerDot(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        initattrs(attrs);
+        initAttrs(attrs);
         initPaint();
     }
 
@@ -125,7 +126,7 @@ public class BezierBannerDot extends View implements ViewPager.OnPageChangeListe
 
     }
 
-    private void initattrs(AttributeSet attrs) {
+    private void initAttrs(AttributeSet attrs) {
         TypedArray typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.BezierBannerDot);
         mSelectedColor = typedArray.getColor(R.styleable.BezierBannerDot_selectedColor, 0xFFFFFFFF);
         mUnSelectedColor = typedArray.getColor(R.styleable.BezierBannerDot_unSelectedColor, 0xFFAAAAAA);
@@ -238,7 +239,11 @@ public class BezierBannerDot extends View implements ViewPager.OnPageChangeListe
     }
 
     /**
-     * 向右移动
+     * 向右移动 Path
+     * lineTo 用于进行直线绘制。
+     * quadTo 用于绘制圆滑曲线，即贝塞尔曲线。2阶
+     * cubicTo 同样是用来实现贝塞尔曲线的。mPath.cubicTo(x1, y1, x2, y2, x3, y3)  3阶
+     * arcTo 用于绘制弧线（实际是截取圆或椭圆的一部分）。
      */
     private void moveToNext() {
         //重置路径
@@ -330,11 +335,12 @@ public class BezierBannerDot extends View implements ViewPager.OnPageChangeListe
         //移动到起点
         mPath2.moveTo(startPoint_support_nextX, startPoint_support_nextY);
         //形成闭合区域
+        //从起点 到控制点 及 终点的贝塞尔曲线 上半部分
         mPath2.quadTo(controlPointX_Next, controlPointY_Next, endPoint_support_nextX, endPoint_support_nextY);
         mPath2.lineTo(endPoint_support_nextX, mRadius + mSupport_Next_radianY);
+        //从起点 到控制点 及 终点的贝塞尔曲线 下半部分
         mPath2.quadTo(controlPointX_Next, controlPointY_Next, startPoint_support_nextX, startPoint_support_nextY + 2 * mY_next);
         mPath2.lineTo(startPoint_support_nextX, startPoint_support_nextY);
-
     }
 
 
@@ -428,11 +434,11 @@ public class BezierBannerDot extends View implements ViewPager.OnPageChangeListe
 
 
     /**
-     * 获取当前值(适用分阶段变化的值) TODO MOVE_STEP_ONE是什么
+     * 获取当前值(适用分阶段变化的值)
      *
      * @param start 初始值
      * @param end   终值
-     * @param step  第几活动阶段
+     * @param step  第几活动阶段  移动时为MOVE_STEP_TWO 与mProgress2相关
      * @return
      */
     public float getValue(float start, float end, int step) {
